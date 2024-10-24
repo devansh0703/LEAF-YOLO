@@ -1,0 +1,1 @@
+python train.py --workers 16 --device 0 --batch-size 32 --epochs 1000 --data data/visdrone.yaml --img 640 640 --cfg cfg/research/q1_aim_n.yaml --weights '' --hyp data/tinyper.yaml --name leaf_tinyversion --cache

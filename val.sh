@@ -1,0 +1,1 @@
+python test.py --data data/visdrone.yaml --img 640 --batch 16 --conf 0.01 --iou 0.5 --device 0 --weights cfg/LEAF-YOLO/leaf-sizes/weights/best.pt --name test --no-trace --save-json

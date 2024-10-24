@@ -1,0 +1,1 @@
+python detect.py --img-size 640 --conf-thres 0.5 --iou-thres 0.6 --device 0 --weights runs/train/leaf_tinyversion/weights/best.pt --name yolov7_640_detect --no-trace --source visualize_img/baidu_P001_timgx-4-.jpg --no-trace

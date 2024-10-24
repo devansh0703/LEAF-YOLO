@@ -1,0 +1,10 @@
+# dataset path
+train: /home/edabk/quangnghiem/tinyperson_dataset/train
+val: /home/edabk/quangnghiem/tinyperson_dataset/val
+
+
+# number of classes
+nc: 2
+
+# class names
+names: ['earth_person', 'sea_person']

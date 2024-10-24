@@ -1,0 +1,1 @@
+python export_v2.py --weights /home/edabk/quangnghiem/Visdrone/yolov7/runs/train/yolov7tinyp2p3p4_spprfe_reduce_inner_img_final/weights/last.pt --grid --end2end --simplify --topk-all 100 --iou-thres 0.5 --conf-thres 0.028 --img-size 640 640

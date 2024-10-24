@@ -1,0 +1,3 @@
+python test.py --data visdrone.yaml --img 640 --batch 16 --conf 0.028 --iou 0.5 --device cpu --weights tensorrt_results/p2p3p4_reduce_inner_final.trt --name p2p2p4_reduce_inner_trt --engine trt --save-json
+
+# python test.py --data visdrone.yaml --img 640 --batch 16 --conf 0.028 --iou 0.5 --device 0 --weights runs/train/yolov7tinyp2p3p4_spprfe_reduce_inner_img_final/weights/last.pt --name test --no-trace --save-json
