@@ -52,18 +52,16 @@ Data preparation
 Single GPU training
 
 ``` shell
-# train p5 models
 python train.py --workers 16 --device 0 --batch-size 16 --epochs 1000 --data data/visdrone.yaml --img 640 640 --cfg cfg/LEAF-YOLO/leaf-sizes.yaml --weights '' --hyp data/hyp.scratch.visdrone.yaml --cache --name leafyolo
 ```
 
 Multiple GPU training
 
 ``` shell
-# train p5 models
 python -m torch.distributed.launch --nproc_per_node 4 --master_port 9527 train.py --workers 8 --device 0,1,2,3 --sync-bn --batch-size 128 --data data/visdrone.yaml --img 640 640 --cfg cfg/LEAF-YOLO/leaf-sizen.yaml --weights '' --name leafyolo_n --hyp data/hyp.scratch.visdrone.yaml
 ```
 
-## Re-parameterization
+## Visualisation
 
 See [grad_cam_visualize.ipynb](grad_cam_visualize.ipynb)
 
