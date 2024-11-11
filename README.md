@@ -1,7 +1,7 @@
-# LEAF-YOLO
+# LEAF-YOLO: Lightweight Edge-Real-Time Small Object Detection on Aerial Imagery
 
-Implementation of paper - [Lightweight Edge-Real-Time Small Object Detection on
-Aerial Imagery](https://www.overleaf.com/project/66d1a12e423331f872248d41)
+Implementation of paper - [LLEAF-YOLO: Lightweight Edge-Real-Time Small Object Detection on
+ Aerial Imagery](https://www.overleaf.com/project/66d1a12e423331f872248d41)
 
 <div align="center">
     <a href="./">
