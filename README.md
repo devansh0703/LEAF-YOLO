@@ -5,7 +5,7 @@ Aerial Imagery](https://www.overleaf.com/project/66d1a12e423331f872248d41)
 
 <div align="center">
     <a href="./">
-        <img src="./figure/params.png" width="75%"/>
+        <img src="./figure/params.png" width="60%"/>
     </a>
 </div>
 
