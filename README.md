@@ -132,7 +132,7 @@ Test with models converted e2e, including EfficientNMS, to fp16 format using Ten
 | Model |  AP<sub>50</sub><sup>val</sup> | FPS<sub>b=1</sub><sup>fp16.trt</sup> |FPS<sub>b=16</sub><sup>fp16.trt</sup> |
 | :-- | :-: | :-: | :-: |
 | EdgeYOLO-T | 38.5% | 27 | 65 |
-| EdgeYOLO-S | 40.8% | 21 | 54* |
+| EdgeYOLO-S | 40.8% | 21 | 54 |
 | **LEAF-YOLO-N** | **39.7%** | **56** | **147** |
 | **LEAF-YOLO** | **48.3%** | **32** | **87** |
 
