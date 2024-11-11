@@ -48,10 +48,6 @@ python test.py --data data/visdrone.yaml --img 640 --batch 16 --conf 0.01 --iou 
 
 Data preparation
 
-``` shell
-bash scripts/get_coco.sh
-```
-
 * Download VisDrone2019-DET dataset images ([train](https://drive.google.com/file/d/1a2oHjcEcwXP8oUF95qiwrqzACb2YlUhn/view), [val](https://drive.google.com/file/d/1bxK5zgLn0_L8x276eKkuYA_FzwCIjb59/view), [test](https://drive.google.com/file/d/1PFdW_VFSCfZ_sTSZAGjQdifF_Xd5mf0V/view)) or follow this document of Ultralytics [Visdrone2019-DET](https://docs.ultralytics.com/datasets/detect/visdrone/). If you have previously used a different version of YOLO, we strongly recommend that you delete `train.cache` and `val.cache` files.
 Single GPU training
 
