@@ -5,7 +5,7 @@ Implementation of paper - [LLEAF-YOLO: Lightweight Edge-Real-Time Small Object D
 
 <div align="center">
     <a href="./">
-        <img src="./figure/params.png" width="50%"/>
+        <img src="./figure/params.png" width="40%"/>
     </a>
 </div>
 
