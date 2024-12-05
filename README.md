@@ -11,7 +11,7 @@ Implementation of paper - [LLEAF-YOLO: Lightweight Edge-Real-Time Small Object D
 
 ## Performance 
 
-VisDrone2019-DET-val, test size = 640, using pytorch fp16
+VisDrone2019-DET-val, test size = 640, using pytorch fp16 on 1xRTX 3090
 
 | Model | #Param.(M) |FLOPs(G) |AP<sup>val</sup> | AP<sub>50</sub><sup>val</sup> | AP<sub>S</sub><sup>val</sup> | AP<sub>M</sub><sup>val</sup> | batch 1 average time |
 | :-- | :-: | :-: | :-: | :-: | :-: | :-: | :-: |
