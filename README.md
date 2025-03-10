@@ -28,7 +28,6 @@ VisDrone2019-DET-val, test size = 640, using pytorch fp16 on 1xRTX 3090
 ## Installation
 
 Conda environment (recommended)
-<details><summary> <b>Expand</b> </summary>
 
 ``` shell
 conda create -n leafyolo python=3.9
@@ -38,7 +37,6 @@ cd LEAF-YOLO
 pip install -r requirements.txt
 ```
 
-</details>
 
 ## Testing
 
@@ -89,17 +87,16 @@ python detect.py --weights cfg/LEAF-YOLO/leaf-sizes/weights/best.pt --conf 0.25 
 ## Export (Follow YOLOv7)
 **Pytorch to ONNX with NMS (and inference)** <a href="https://colab.research.google.com/github/WongKinYiu/yolov7/blob/main/tools/YOLOv7onnx.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
 ```shell
-python export.py --weights yolov7-tiny.pt --grid --end2end --simplify \
+python export.py --weights cfg/LEAF-YOLO/leaf-sizes/weights/best.pt --grid --end2end --simplify \
         --topk-all 100 --iou-thres 0.65 --conf-thres 0.35 --img-size 640 640 --max-wh 640
 ```
 
 **Pytorch to TensorRT with NMS (and inference)** <a href="https://colab.research.google.com/github/WongKinYiu/yolov7/blob/main/tools/YOLOv7trt.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
 
 ```shell
-wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7-tiny.pt
-python export.py --weights ./yolov7-tiny.pt --grid --end2end --simplify --topk-all 100 --iou-thres 0.65 --conf-thres 0.35 --img-size 640 640
+python export.py --weights  cfg/LEAF-YOLO/leaf-sizes/weights/best.pt --grid --end2end --simplify --topk-all 100 --iou-thres 0.65 --conf-thres 0.35 --img-size 640 640
 git clone https://github.com/Linaom1214/tensorrt-python.git
-python ./tensorrt-python/export.py -o yolov7-tiny.onnx -e yolov7-tiny-nms.trt -p fp16
+python ./tensorrt-python/export.py -o best.pt.onnx -e leafs.trt -p fp16
 ```
 
 **Pytorch to TensorRT another way** <a href="https://colab.research.google.com/gist/AlexeyAB/fcb47ae544cf284eb24d8ad8e880d45c/yolov7trtlinaom.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a> <details><summary> <b>Expand</b> </summary>
