@@ -19,9 +19,9 @@ VisDrone2019-DET-val, test size = 640, using pytorch fp16 on 1xRTX 3090
 | [**PDWT-YOLO**](https://github.com/1thinker1/PDWT-YOLO) | 6.44 | 24.5 | 24.3% | 42.6% | 15.9% | 33.4% | 22.2 ms |
 | [**EdgeYOLO-T**](https://github.com/LSH9832/edgeyolo) | 5.5 | 27.24 | 21.8% | 38.5% | 12.4% | 32.5% | 29.93 ms |
 | [**EdgeYOLO-S**](https://github.com/LSH9832/edgeyolo) | 9.3 | 45.32 | 23.5% | 40.8% | 13.8%| 34.8% | 38.18 ms |
-| [**Drone-YOLO-N**](https://www.mdpi.com/2504-446X/7/8/526) | 5.5 | 27.24 | 21.8% | 38.5% | 12.4% | 32.5% | 29.93 ms |
-| [**Drone-YOLO-T**](https://www.mdpi.com/2504-446X/7/8/526) | 5.5 | 27.24 | 21.8% | 38.5% | 12.4% | 32.5% | 29.93 ms |
-| [**Drone-YOLO-S**](https://www.mdpi.com/2504-446X/7/8/526) | 5.5 | 27.24 | 21.8% | 38.5% | 12.4% | 32.5% | 29.93 ms |
+| [**Drone-YOLO-N**](https://www.mdpi.com/2504-446X/7/8/526) | 3.05 | _ | 22.7% | 38.1% | _ | _ | 29.93 ms |
+| [**Drone-YOLO-T**](https://www.mdpi.com/2504-446X/7/8/526) | 5.35 | _ | 25.6% | 42.8% | _ | _ | 29.93 ms |
+| [**Drone-YOLO-S**](https://www.mdpi.com/2504-446X/7/8/526) | 10.0 | _ | 27.0% | 44.3% | _ | _ | 29.93 ms |
 | [**LEAF-YOLO-N**](https://github.com/highquanglity/LEAF-YOLO/blob/main/cfg/LEAF-YOLO/leaf-sizen/weights/best.pt) | **1.2** | **5.6** | **21.9%** | **39.7%** | **14.0%** | **30.6%** | **16.2** ms |
 | [**LEAF-YOLO**](https://github.com/highquanglity/LEAF-YOLO/blob/main/cfg/LEAF-YOLO/leaf-sizes/weights/best.pt) | **4.28** | **20.9** | **28.2%** | **48.3%** | **20.0%** | **38.0%** | **21.7 ms** |
 
@@ -87,9 +87,6 @@ python detect.py --weights cfg/LEAF-YOLO/leaf-sizes/weights/best.pt --conf 0.25 
 ```
 
 ## Export (Follow YOLOv7)
-
-**Pytorch to CoreML (and inference on MacOS/iOS)** <a href="https://colab.research.google.com/github/WongKinYiu/yolov7/blob/main/tools/YOLOv7CoreML.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
-
 **Pytorch to ONNX with NMS (and inference)** <a href="https://colab.research.google.com/github/WongKinYiu/yolov7/blob/main/tools/YOLOv7onnx.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
 ```shell
 python export.py --weights yolov7-tiny.pt --grid --end2end --simplify \
@@ -137,7 +134,19 @@ Test with models converted e2e, including EfficientNMS, to fp16 format using Ten
 ## Citation
 
 ```
-Wait for acceptance
+@article{NGHIEM2025200484,
+title = {LEAF-YOLO: Lightweight Edge-Real-Time Small Object Detection on Aerial Imagery},
+journal = {Intelligent Systems with Applications},
+volume = {25},
+pages = {200484},
+year = {2025},
+issn = {2667-3053},
+doi = {https://doi.org/10.1016/j.iswa.2025.200484},
+url = {https://www.sciencedirect.com/science/article/pii/S2667305325000109},
+author = {Van Quang Nghiem and Huy Hoang Nguyen and Minh Son Hoang},
+keywords = {Aerial imagery, UAV imagery, Small object detection, Edge-real-time algorithm, You only look once (YOLO)},
+abstract = {Advances in Unmanned Aerial Vehicles (UAVs) and deep learning have spotlighted the challenges of detecting small objects in UAV imagery, where limited computational resources complicate deployment on edge devices. While many high-accuracy deep learning solutions have been developed, their large parameter sizes hinder deployment on edge devices where low latency and efficient resource use are essential. To address this, we propose LEAF-YOLO, a lightweight and efficient object detection algorithm with two versions: LEAF-YOLO (standard) and LEAF-YOLO-N (nano). Using Lightweight-Efficient Aggregating Fusion along with other blocks and techniques, LEAF-YOLO enhances multiscale feature extraction while reducing complexity, targeting small object detection in dense and varied backgrounds. Experimental results show that both LEAF-YOLO and LEAF-YOLO-N outperform models with fewer than 20 million parameters in accuracy and efficiency on the Visdrone2019-DET-val dataset, running in real-time (>30 FPS) on the Jetson AGX Xavier. LEAF-YOLO-N achieves 21.9% AP.50:.95 and 39.7% AP.50 with only 1.2M parameters. LEAF-YOLO achieves 28.2% AP.50:.95 and 48.3% AP.50 with 4.28M parameters. Furthermore, LEAF-YOLO attains 23% AP.50 on the TinyPerson dataset, outperforming models with ≥ 20 million parameters, making it suitable for UAV-based human detection.}
+}
 ```
 
 ## Acknowledgements
