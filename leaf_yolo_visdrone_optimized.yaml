@@ -1,0 +1,288 @@
+# LEAF-YOLO VisDrone Optimized Configuration
+# Specifically tuned for aerial small object detection on VisDrone2019-DET dataset
+# Author: Based on LEAF-YOLO paper implementation
+# Date: October 2025
+
+# Model parameters
+nc: 10  # number of classes (VisDrone)
+depth_multiple: 1.0  # model depth multiple
+width_multiple: 0.5  # layer channel multiple (0.5 for nano, 1.0 for standard)
+
+# Anchors optimized for VisDrone small objects
+anchors:
+  - [2.9434, 4.0435, 3.8626, 8.5592, 6.8534, 5.9391]  # P2/4 - Very small objects
+  - [10, 13, 16, 30, 33, 23]                           # P3/8 - Small objects  
+  - [30, 61, 62, 45, 59, 119]                          # P4/16 - Medium objects
+  - [116, 90, 156, 198, 373, 326]                      # P5/32 - Large objects
+
+# LEAF-YOLO backbone architecture
+backbone:
+  # [from, number, module, args]
+  # Input processing: 640x640 -> 320x320
+  [[-1, 1, Conv, [32, 3, 2, None, 1]],  # 0-P1/2
+  
+   # Stage 1: P2 (320x320 -> 160x160)
+   [-1, 1, Conv, [64, 3, 2, None, 1]],  # 1-P2/4    
+   [-1, 1, GhostConv, [64, 3, 1]],      # 2
+   [-1, 1, Conv, [32, 1, 1, None, 1]],  # 3
+   [-2, 1, Conv, [32, 1, 1, None, 1]],  # 4
+   [-1, 1, PConv, [32]],                # 5
+   [-1, 1, PConv, [32]],                # 6  
+   [-1, 1, PConv, [32]],                # 7
+   [-1, 1, PConv, [32]],                # 8
+   [[-1, -3, -5, -6], 1, Concat, [1]], # 9 - LEAF Concat
+   [-1, 1, C3_Res2Block, [64]],        # 10
+   
+   # Stage 2: P3 (160x160 -> 80x80)
+   [-1, 1, MP, []],                     # 11
+   [-1, 1, Conv, [64, 1, 1]],          # 12
+   [-3, 1, Conv, [64, 1, 1]],          # 13
+   [-1, 1, GhostConv, [64, 3, 2]],     # 14
+   [[-1, -3], 1, Concat, [1]],         # 15-P3/8
+   [-1, 1, Conv, [64, 1, 1, None, 1]], # 16
+   [-2, 1, Conv, [64, 1, 1, None, 1]], # 17
+   [-1, 1, PConv, [64]],               # 18
+   [-1, 1, PConv, [64]],               # 19
+   [-1, 1, PConv, [64]],               # 20
+   [-1, 1, PConv, [64]],               # 21
+   [[-1, -3, -5, -6], 1, Concat, [1]], # 22 - LEAF Concat
+   [-1, 1, C3_Res2Block, [128]],       # 23
+
+   # Stage 3: P4 (80x80 -> 40x40)
+   [-1, 1, MP, []],                     # 24
+   [-1, 1, Conv, [128, 1, 1]],         # 25
+   [-3, 1, Conv, [128, 1, 1]],         # 26
+   [-1, 1, GhostConv, [128, 3, 2]],    # 27
+   [[-1, -3], 1, Concat, [1]],         # 28-P4/16
+   [-1, 1, Conv, [128, 1, 1, None, 1]], # 29
+   [-2, 1, Conv, [128, 1, 1, None, 1]], # 30
+   [-1, 1, PConv, [128]],              # 31
+   [-1, 1, PConv, [128]],              # 32
+   [-1, 1, PConv, [128]],              # 33
+   [-1, 1, PConv, [128]],              # 34
+   [[-1, -3, -5, -6], 1, Concat, [1]], # 35 - LEAF Concat
+   [-1, 1, C3_Res2Block, [256]],       # 36
+
+   # Stage 4: P5 (40x40 -> 20x20)
+   [-1, 1, MP, []],                     # 37
+   [-1, 1, Conv, [256, 1, 1]],         # 38
+   [-3, 1, Conv, [256, 1, 1]],         # 39
+   [-1, 1, GhostConv, [256, 3, 2, 1]], # 40
+   [[-1, -3], 1, Concat, [1]],         # 41-P5/32
+   [-1, 1, Conv, [256, 1, 1, None, 1]], # 42
+   [-2, 1, Conv, [256, 1, 1, None, 1]], # 43
+   [-1, 1, PConv, [256]],              # 44
+   [-1, 1, PConv, [256]],              # 45
+   [-1, 1, PConv, [256]],              # 46
+   [-1, 1, PConv, [256]],              # 47
+   [[-1, -3, -5, -6], 1, Concat, [1]], # 48 - LEAF Concat
+   [-1, 1, C3_Res2Block, [256]],       # 49
+  ]
+
+# LEAF-YOLO neck (PANet-style with enhancements)
+head:
+  # Spatial Pyramid Pooling with RFEM
+  [[-1, 1, SPPRFEM, [512]],            # 50
+  
+   # Top-down path: P5 -> P4 -> P3 -> P2
+   [-1, 1, CoordConvATT, [128, 1, 1]], # 51
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']], # 52
+   [36, 1, Conv, [128, 1, 1, None, 1]], # 53 - Route backbone P4
+   [[-1, -2], 1, Concat, [1]],         # 54
+   
+   [-1, 1, Conv, [64, 1, 1, None, 1]], # 55
+   [-2, 1, Conv, [64, 1, 1, None, 1]], # 56
+   [-1, 1, Conv, [64, 3, 1, None, 1]], # 57
+   [-1, 1, Conv, [64, 3, 1, None, 1]], # 58
+   [[-1, -2, -3, -4], 1, Concat, [1]], # 59
+   [-1, 1, C3_Res2Block, [128]],       # 60
+  
+   [-1, 1, CoordConvATT, [64, 1, 1]],  # 61
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']], # 62
+   [23, 1, Conv, [64, 1, 1, None, 1]], # 63 - Route backbone P3
+   [[-1, -2], 1, Concat, [1]],         # 64
+   
+   [-1, 1, Conv, [32, 1, 1, None, 1]], # 65
+   [-2, 1, Conv, [32, 1, 1, None, 1]], # 66
+   [-1, 1, Conv, [32, 3, 1, None, 1]], # 67
+   [-1, 1, Conv, [32, 3, 1, None, 1]], # 68
+   [[-1, -2, -3, -4], 1, Concat, [1]], # 69
+   [-1, 1, C3_Res2Block, [64]],        # 70
+   
+   [-1, 1, CoordConvATT, [64, 1, 1]],  # 71
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']], # 72
+   [10, 1, Conv, [32, 1, 1, None, 1]], # 73 - Route backbone P2
+   [[-1, -2], 1, Concat, [1]],         # 74
+
+   [-1, 1, Conv, [32, 1, 1, None, 1]], # 75
+   [-2, 1, Conv, [32, 1, 1, None, 1]], # 76
+   [-1, 1, Conv, [32, 3, 1, None, 1]], # 77
+   [-1, 1, Conv, [32, 3, 1, None, 1]], # 78
+   [[-1, -2, -3, -4], 1, Concat, [1]], # 79
+   [-1, 1, C3_Res2Block, [64]],        # 80
+
+   # Bottom-up path: P2 -> P3 -> P4 -> P5
+   [-1, 1, Conv, [32, 1, 1, None, 1]], # 81
+   [-2, 1, Conv, [32, 1, 1, None, 1]], # 82
+   [-1, 1, Conv, [32, 3, 1, None, 1]], # 83
+   [-1, 1, Conv, [32, 3, 1, None, 1]], # 84
+   [[-1, -2, -3, -4], 1, Concat, [1]], # 85
+   [-1, 1, Conv, [64, 1, 1, None, 1]], # 86 - P2 output
+
+   [-1, 1, GhostConv, [128, 3, 2]],    # 87
+   [[-1, 70], 1, Concat, [1]],         # 88 - Cat P3
+   [-1, 1, Conv, [64, 1, 1, None, 1]], # 89
+   [-2, 1, Conv, [64, 1, 1, None, 1]], # 90
+   [-1, 1, Conv, [64, 3, 1, None, 1]], # 91
+   [-1, 1, Conv, [64, 3, 1, None, 1]], # 92
+   [[-1, -2, -3, -4], 1, Concat, [1]], # 93
+   [-1, 1, Conv, [128, 1, 1, None, 1]], # 94 - P3 output
+
+   [-1, 1, GhostConv, [256, 3, 2, 1]], # 95
+   [[-1, 60], 1, Concat, [1]],         # 96 - Cat P4
+   [-1, 1, Conv, [128, 1, 1, None, 1]], # 97
+   [-2, 1, Conv, [128, 1, 1, None, 1]], # 98
+   [-1, 1, Conv, [128, 3, 1, None, 1]], # 99
+   [-1, 1, Conv, [128, 3, 1, None, 1]], # 100
+   [[-1, -2, -3, -4], 1, Concat, [1]], # 101
+   [-1, 1, Conv, [256, 1, 1, None, 1]], # 102 - P4 output
+
+   [-1, 1, GhostConv, [128, 3, 2, 1]], # 103
+   [[-1, 50], 1, Concat, [1]],         # 104 - Cat P5
+
+   # Detection preprocessing with PConv
+   [86, 1, PConv, [256]],              # 105 - P2
+   [94, 1, PConv, [256]],              # 106 - P3
+   [102, 1, PConv, [512]],             # 107 - P4
+   [104, 1, PConv, [512]],             # 108 - P5
+
+   # IDetect head with 4 scales
+   [[105, 106, 107, 108], 1, IDetect, [nc, anchors]],   # 109 - Detect(P2, P3, P4, P5)
+  ]
+
+# Training hyperparameters optimized for VisDrone
+hyperparameters:
+  # Optimizer settings
+  lr0: 0.01          # initial learning rate
+  lrf: 0.01          # final OneCycleLR learning rate (lr0 * lrf)
+  momentum: 0.937    # SGD momentum/Adam beta1
+  weight_decay: 0.0005  # optimizer weight decay 5e-4
+  warmup_epochs: 3.0 # warmup epochs (fractions ok)
+  warmup_momentum: 0.8   # warmup initial momentum
+  warmup_bias_lr: 0.1    # warmup initial bias lr
+  
+  # Loss function weights
+  box: 0.05          # box loss gain
+  cls: 0.5           # cls loss gain  
+  obj: 1.0           # obj loss gain (scale with pixels)
+  label_smoothing: 0.0   # label smoothing epsilon
+  
+  # Data augmentation (optimized for aerial imagery)
+  hsv_h: 0.015       # image HSV-Hue augmentation (fraction)
+  hsv_s: 0.7         # image HSV-Saturation augmentation (fraction)
+  hsv_v: 0.4         # image HSV-Value augmentation (fraction)
+  degrees: 0.0       # image rotation (+/- deg)
+  translate: 0.1     # image translation (+/- fraction)
+  scale: 0.5         # image scale (+/- gain)
+  shear: 0.0         # image shear (+/- deg)
+  perspective: 0.0   # image perspective (+/- fraction), range 0-0.001
+  flipud: 0.0        # image flip up-down (probability)
+  fliplr: 0.5        # image flip left-right (probability)
+  mosaic: 1.0        # image mosaic (probability)
+  mixup: 0.0         # image mixup (probability)
+  copy_paste: 0.0    # segment copy-paste (probability)
+  
+  # Anchor settings
+  anchor_t: 4.0      # anchor-multiple threshold
+  
+  # IoU settings
+  iou_t: 0.20        # IoU training threshold
+  cls_pw: 1.0        # cls BCELoss positive_weight
+  obj_pw: 1.0        # obj BCELoss positive_weight
+  
+# Model variants configuration
+variants:
+  nano:
+    width_multiple: 0.5
+    depth_multiple: 1.0
+    target_params: "1.2M"
+    target_flops: "5.6G"
+    target_fps_jetson: 56
+    
+  standard:
+    width_multiple: 1.0 
+    depth_multiple: 1.0
+    target_params: "4.28M"
+    target_flops: "20.9G"
+    target_fps_jetson: 32
+
+# VisDrone dataset configuration
+dataset:
+  name: "VisDrone2019-DET"
+  nc: 10
+  classes: ['pedestrian', 'people', 'bicycle', 'car', 'van', 'truck', 'tricycle', 'awning-tricycle', 'bus', 'motor']
+  
+  # Expected performance metrics
+  expected_performance:
+    nano:
+      map_50_95: 21.9
+      map_50: 39.7
+      ap_small: 14.0
+      inference_time_ms: 16.2
+      
+    standard:
+      map_50_95: 28.2
+      map_50: 48.3
+      ap_small: 20.0
+      inference_time_ms: 21.7
+
+# Training configuration
+training:
+  epochs: 1000
+  batch_size: 16
+  img_size: 640
+  cache: False
+  multi_scale: True
+  single_cls: False
+  
+  # Validation settings
+  val_img_size: 640
+  val_conf_thresh: 0.001
+  val_iou_thresh: 0.6
+  
+  # Save settings
+  save_period: 10    # save checkpoint every x epochs
+  eval_period: 1     # evaluate every x epochs
+  
+# Model optimization settings
+optimization:
+  # Quantization
+  quantization: False
+  qat: False  # Quantization-aware training
+  
+  # Pruning  
+  pruning: False
+  pruning_ratio: 0.3
+  
+  # Knowledge distillation
+  distillation: False
+  teacher_model: "yolov7.pt"
+  
+  # TensorRT optimization
+  tensorrt: True
+  fp16: True
+  
+# Edge deployment settings
+deployment:
+  # Target platforms
+  platforms: ["jetson_agx_xavier", "jetson_nano", "coral_dev_board"]
+  
+  # Performance requirements
+  min_fps: 30
+  max_latency_ms: 50
+  max_memory_mb: 512
+  
+  # Optimization flags
+  optimize_for_mobile: True
+  use_half_precision: True
+  enable_dynamic_batch: False
